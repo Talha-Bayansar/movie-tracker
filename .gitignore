@@ -24,6 +24,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Editor
+.vscode/
 .vscode/*
 !.vscode/launch.json
 !.vscode/*.code-snippets
@@ -42,3 +43,4 @@ lerna-debug.log*
 
 # Database
 drizzle/
+drizzle/*
