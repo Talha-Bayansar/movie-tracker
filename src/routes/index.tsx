@@ -1,15 +1,19 @@
 import { component$ } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
+import { type Favorite, db, favorites } from "~/db";
+
+export const useFavorites = routeLoader$(async () => {
+  const response: Favorite[] = await db.select().from(favorites).all();
+  return response;
+});
 
 export default component$(() => {
+  const favorites = useFavorites();
+
   return (
     <>
       <h1>Hi 👋</h1>
-      <p>
-        Can't wait to see what you build with qwik!
-        <br />
-        Happy coding.
-      </p>
+      <p></p>
     </>
   );
 });

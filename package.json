@@ -27,6 +27,8 @@
     "@types/node": "^20.4.0",
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
+    "dotenv": "^16.3.1",
+    "drizzle-kit": "^0.19.12",
     "eslint": "8.44.0",
     "eslint-plugin-qwik": "^1.2.6",
     "prettier": "2.8.8",
@@ -34,5 +36,9 @@
     "undici": "5.22.1",
     "vite": "4.4.0",
     "vite-tsconfig-paths": "4.2.0"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.3.1",
+    "drizzle-orm": "^0.28.1"
   }
 }
