@@ -1,8 +1,8 @@
 import { component$ } from "@builder.io/qwik";
-import { SubTitle } from "~/components";
+import { SubTitle } from "~/shared/components";
 import { MovieCard } from "../components";
 import type { Genre, Movie } from "../models";
-import { Star } from "~/icons";
+import { Star } from "~/shared/icons";
 
 type Props = {
   title: string;

@@ -7,7 +7,7 @@ type Props = {
 
 export const SubTitle = component$(({ class: className }: Props) => {
   return (
-    <h2 class={twMerge("uppercase font-semibold", className)}>
+    <h2 class={twMerge("uppercase font-medium text-base", className)}>
       <Slot />
     </h2>
   );

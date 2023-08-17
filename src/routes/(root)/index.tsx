@@ -47,15 +47,13 @@ export default component$(() => {
   const genres = useGenres();
 
   return (
-    <>
-      <div class="flex flex-col">
-        <MovieSection
-          title="Now playing"
-          movies={nowPlayingMovies.value.results}
-          genres={genres.value.genres}
-        />
-      </div>
-    </>
+    <div class="flex flex-col">
+      <MovieSection
+        title="Now playing"
+        movies={nowPlayingMovies.value.results}
+        genres={genres.value.genres}
+      />
+    </div>
   );
 });
 
