@@ -34,7 +34,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="flex-grow flex flex-col overflow-y-scroll">
+      <div class="flex-grow flex flex-col overflow-y-scroll p-6">
         <header class="flex">
           <Title>{title}</Title>
         </header>

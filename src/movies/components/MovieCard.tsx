@@ -15,7 +15,7 @@ export const MovieCard = component$(({ movie }: Props) => {
         width={160}
         height={240}
         src={getMediaUrl("w200", movie.poster_path)}
-        alt="Profile picture"
+        alt={`Poster of the movie: ${movie.title}`}
       />
       <h3 class="block w-full whitespace-nowrap text-ellipsis overflow-hidden text-sm font-medium">
         {movie.title}
