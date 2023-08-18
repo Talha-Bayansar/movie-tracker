@@ -1,5 +1,5 @@
 export enum URLS {
-  HOME = "http://localhost:5173",
-  SIGN_IN = `${HOME}/sign-in`,
-  SEARCH = `${HOME}/search`,
+  HOME = "/",
+  SIGN_IN = "/sign-in",
+  SEARCH = "/search",
 }
