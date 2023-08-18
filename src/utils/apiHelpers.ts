@@ -2,7 +2,7 @@ export const getMediaUrl = (size: string, path: string) =>
   `https://image.tmdb.org/t/p/${size}${path}`;
 
 const fetchAuthenticated = async (url: string) => {
-  console.log("ENVIRONMENT VARIABLE", process.env.PUBLIC_MOVIE_READ_TOKEN);
+  console.log("PUBLIC_MOVIE_READ_TOKEN", process.env.PUBLIC_MOVIE_READ_TOKEN);
   const options = {
     headers: {
       Authorization: `Bearer ${process.env.PUBLIC_MOVIE_READ_TOKEN}`,
