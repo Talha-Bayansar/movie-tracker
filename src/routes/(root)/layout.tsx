@@ -34,32 +34,34 @@ export default component$(() => {
 
   return (
     <>
-      <div class="flex-grow flex flex-col overflow-y-scroll p-6">
-        <header class="flex">
-          <Title>{title}</Title>
-        </header>
-        <main class="flex flex-col">
-          <Slot />
-        </main>
+      <div class="flex flex-col">
+        <div class="flex flex-col p-6">
+          <header class="flex">
+            <Title>{title}</Title>
+          </header>
+          <main class="flex flex-col">
+            <Slot />
+          </main>
+        </div>
+        <footer class="p-4 pt-10 sticky bottom-0 bg-gradient-to-t from-c-background to-transparent from-70%">
+          <nav class="flex justify-evenly items-center">
+            {navItems.map((item) => {
+              const isActive = location.url.pathname === item.pathName;
+              return (
+                <Link key={`navItem_${item.href}`} href={item.href}>
+                  <NavButton isActive={isActive}>
+                    <Icon
+                      size={24}
+                      name={item.iconName}
+                      color={isActive ? "#F09531" : "#DADADA"}
+                    />
+                  </NavButton>
+                </Link>
+              );
+            })}
+          </nav>
+        </footer>
       </div>
-      <footer class="p-4">
-        <nav class="flex justify-evenly items-center">
-          {navItems.map((item) => {
-            const isActive = location.url.pathname === item.pathName;
-            return (
-              <Link key={`navItem_${item.href}`} href={item.href}>
-                <NavButton isActive={isActive}>
-                  <Icon
-                    size={24}
-                    name={item.iconName}
-                    color={isActive ? "#F09531" : "#DADADA"}
-                  />
-                </NavButton>
-              </Link>
-            );
-          })}
-        </nav>
-      </footer>
     </>
   );
 });
