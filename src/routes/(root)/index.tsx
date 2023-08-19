@@ -26,7 +26,7 @@ export const useNowPlayingMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
   const today = startOfToday();
   const response = await fetchData(
-    event.env.get("MOVIE_READ_TOKEN"),
+    event.env.get("MOVIE_READ_TOKEN") as string,
     `/discover/movie`,
     {
       page: pageNumber ?? 1,
@@ -44,7 +44,7 @@ export const useNowPlayingMovies = routeLoader$(async (event) => {
 export const usePopularMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
   const response = await fetchData(
-    event.env.get("MOVIE_READ_TOKEN"),
+    event.env.get("MOVIE_READ_TOKEN") as string,
     `/movie/popular`,
     {
       page: pageNumber ?? 1,
@@ -56,7 +56,7 @@ export const usePopularMovies = routeLoader$(async (event) => {
 export const useTopRatedMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
   const response = await fetchData(
-    event.env.get("MOVIE_READ_TOKEN"),
+    event.env.get("MOVIE_READ_TOKEN") as string,
     `/movie/top_rated`,
     {
       page: pageNumber ?? 1,
@@ -69,7 +69,7 @@ export const useUpcomingMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
   const today = startOfToday();
   const response = await fetchData(
-    event.env.get("MOVIE_READ_TOKEN"),
+    event.env.get("MOVIE_READ_TOKEN") as string,
     `/discover/movie`,
     {
       page: pageNumber ?? 1,
@@ -85,7 +85,7 @@ export const useUpcomingMovies = routeLoader$(async (event) => {
 
 export const useGenres = routeLoader$(async (event) => {
   const response = await fetchData(
-    event.env.get("MOVIE_READ_TOKEN"),
+    event.env.get("MOVIE_READ_TOKEN") as string,
     `/genre/movie/list`
   );
   return response as GenreResponse;
