@@ -25,50 +25,69 @@ type ApiResponse = {
 export const useNowPlayingMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
   const today = startOfToday();
-  const response = await fetchData(`/discover/movie`, {
-    page: pageNumber ?? 1,
-    include_adult: false,
-    include_video: false,
-    sort_by: "popularity.desc",
-    with_release_type: "2|3",
-    "primary_release_date.gte": format(addMonths(today, -1), "yyyy-MM-dd"),
-    "primary_release_date.lte": format(today, "yyyy-MM-dd"),
-  });
+  const response = await fetchData(
+    event.env.get("MOVIE_READ_TOKEN"),
+    `/discover/movie`,
+    {
+      page: pageNumber ?? 1,
+      include_adult: false,
+      include_video: false,
+      sort_by: "popularity.desc",
+      with_release_type: "2|3",
+      "primary_release_date.gte": format(addMonths(today, -1), "yyyy-MM-dd"),
+      "primary_release_date.lte": format(today, "yyyy-MM-dd"),
+    }
+  );
   return response as ApiResponse;
 });
 
 export const usePopularMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
-  const response = await fetchData(`/movie/popular`, {
-    page: pageNumber ?? 1,
-  });
+  const response = await fetchData(
+    event.env.get("MOVIE_READ_TOKEN"),
+    `/movie/popular`,
+    {
+      page: pageNumber ?? 1,
+    }
+  );
   return response as ApiResponse;
 });
 
 export const useTopRatedMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
-  const response = await fetchData(`/movie/top_rated`, {
-    page: pageNumber ?? 1,
-  });
+  const response = await fetchData(
+    event.env.get("MOVIE_READ_TOKEN"),
+    `/movie/top_rated`,
+    {
+      page: pageNumber ?? 1,
+    }
+  );
   return response as ApiResponse;
 });
 
 export const useUpcomingMovies = routeLoader$(async (event) => {
   const pageNumber = event.query.get("page");
   const today = startOfToday();
-  const response = await fetchData(`/discover/movie`, {
-    page: pageNumber ?? 1,
-    include_adult: false,
-    include_video: false,
-    sort_by: "popularity.desc",
-    with_release_type: "2|3",
-    "primary_release_date.gte": format(addDays(today, 1), "yyyy-MM-dd"),
-  });
+  const response = await fetchData(
+    event.env.get("MOVIE_READ_TOKEN"),
+    `/discover/movie`,
+    {
+      page: pageNumber ?? 1,
+      include_adult: false,
+      include_video: false,
+      sort_by: "popularity.desc",
+      with_release_type: "2|3",
+      "primary_release_date.gte": format(addDays(today, 1), "yyyy-MM-dd"),
+    }
+  );
   return response as ApiResponse;
 });
 
-export const useGenres = routeLoader$(async () => {
-  const response = await fetchData(`/genre/movie/list`);
+export const useGenres = routeLoader$(async (event) => {
+  const response = await fetchData(
+    event.env.get("MOVIE_READ_TOKEN"),
+    `/genre/movie/list`
+  );
   return response as GenreResponse;
 });
 

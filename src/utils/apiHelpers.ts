@@ -1,11 +1,10 @@
 export const getMediaUrl = (size: string, path: string) =>
   `https://image.tmdb.org/t/p/${size}${path}`;
 
-const fetchAuthenticated = async (url: string) => {
-  console.log("PUBLIC_MOVIE_READ_TOKEN", process.env.PUBLIC_MOVIE_READ_TOKEN);
+const fetchAuthenticated = async (url: string, token: string) => {
   const options = {
     headers: {
-      Authorization: `Bearer ${process.env.PUBLIC_MOVIE_READ_TOKEN}`,
+      Authorization: `Bearer ${token}`,
     },
   };
   const response = await fetch(url, options);
@@ -13,7 +12,11 @@ const fetchAuthenticated = async (url: string) => {
   return result;
 };
 
-export const fetchData = async <T>(path: string, parameters?: any) => {
+export const fetchData = async <T>(
+  token: string,
+  path: string,
+  parameters?: any
+) => {
   let url = `https://api.themoviedb.org/3${path}`;
 
   if (parameters) {
@@ -24,13 +27,17 @@ export const fetchData = async <T>(path: string, parameters?: any) => {
     url = `${url}?${params}`;
   }
 
-  const response = fetchAuthenticated(url);
+  const response = fetchAuthenticated(url, token);
   return response as T;
 };
 
-export const fetchImage = async <T>(path: string, size: string) => {
+export const fetchImage = async <T>(
+  token: string,
+  path: string,
+  size: string
+) => {
   const url = getMediaUrl(size, path);
 
-  const response = fetchAuthenticated(url);
+  const response = fetchAuthenticated(url, token);
   return response as T;
 };
