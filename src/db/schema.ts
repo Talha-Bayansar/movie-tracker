@@ -5,6 +5,15 @@ import {
   primaryKey,
 } from "drizzle-orm/sqlite-core";
 import type { AdapterAccount } from "@auth/core/adapters";
+import { InferModel } from "drizzle-orm";
+
+export const favorites = sqliteTable("favorite", {
+  id: text("id").notNull().primaryKey(),
+  movieId: text("movieId").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+});
 
 export const users = sqliteTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -55,3 +64,6 @@ export const verificationTokens = sqliteTable(
     compoundKey: primaryKey(vt.identifier, vt.token),
   })
 );
+
+export type Favorite = InferModel<typeof favorites, "select">;
+export type NewFavorite = InferModel<typeof favorites, "insert">;
