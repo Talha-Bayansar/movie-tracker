@@ -14,9 +14,13 @@ export const MovieSection = component$(({ title, movies, genres }: Props) => {
   return (
     <div class="flex flex-col">
       <SubTitle class="mb-4">{title}</SubTitle>
-      <div class="flex gap-4 overflow-x-scroll">
+      <div class="flex gap-4 overflow-x-scroll mx-[-1.5rem]">
         {movies?.map((movie) => (
-          <MovieCard key={`now_playing_${movie.id}`} movie={movie}>
+          <MovieCard
+            key={`now_playing_${movie.id}`}
+            movie={movie}
+            class="first:ml-6 last:mr-6"
+          >
             <div class="flex items-center gap-1 text-sm" q:slot="subtitle">
               <Star size={12} /> {movie.vote_average}
             </div>

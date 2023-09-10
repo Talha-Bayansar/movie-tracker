@@ -43,7 +43,7 @@ export default component$(() => {
             <Slot />
           </main>
         </div>
-        <footer class="p-4 pt-10 sticky bottom-0 bg-gradient-to-t from-c-background to-transparent from-70%">
+        <footer class="px-4 pb-6 pt-10 sticky bottom-0 bg-gradient-to-t from-c-background to-transparent from-75%">
           <nav class="flex justify-evenly items-center">
             {navItems.map((item) => {
               const isActive = location.url.pathname === item.pathName;
