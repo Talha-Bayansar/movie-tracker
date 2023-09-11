@@ -19,7 +19,7 @@ export const MovieSection = component$(({ title, movies, genres }: Props) => {
           <MovieCard
             key={`now_playing_${movie.id}`}
             movie={movie}
-            class="first:ml-6 last:mr-6"
+            class="first:ml-6"
           >
             <div class="flex items-center gap-1 text-sm" q:slot="subtitle">
               <Star size={12} /> {movie.vote_average}
@@ -35,6 +35,7 @@ export const MovieSection = component$(({ title, movies, genres }: Props) => {
             </div>
           </MovieCard>
         ))}
+        {movies?.length && movies.length > 0 && <div class="pr-2" />}
       </div>
     </div>
   );
