@@ -57,7 +57,7 @@ export default component$(() => {
         />
       </Form>
       {!movies.value ? (
-        <div class="w-full h-full grid place-items-center">
+        <div class="w-full grid place-items-center">
           Search your favorite movies.
         </div>
       ) : movies.value.movie.total_results > 0 ? (
@@ -80,7 +80,7 @@ export default component$(() => {
           ))}
         </div>
       ) : (
-        <div class="w-full h-full grid place-items-center">
+        <div class="w-full grid place-items-center">
           There were no results for the given title.
         </div>
       )}
