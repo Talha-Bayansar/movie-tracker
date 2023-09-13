@@ -25,7 +25,7 @@ export const MovieSection = component$(({ title, movies, genres }: Props) => {
               <Star size={12} /> {movie.vote_average}
             </div>
             <div
-              class="text-c-text-small text-xs text-ellipsis whitespace-nowrap overflow-hidden"
+              class="text-c-text-small text-xs text-ellipsis shrink-0 whitespace-nowrap overflow-hidden"
               q:slot="footer"
             >
               {genres

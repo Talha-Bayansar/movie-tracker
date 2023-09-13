@@ -1,7 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Form, routeLoader$ } from "@builder.io/qwik-city";
-import { MovieCard, type Movie, type Genre } from "~/movies";
-import { Star } from "~/shared";
+import { type Movie, type Genre, MovieGrid } from "~/movies";
 import { fetchData } from "~/utils";
 
 type GenreResponse = {
@@ -61,24 +60,10 @@ export default component$(() => {
           Search your favorite movies.
         </div>
       ) : movies.value.movie.total_results > 0 ? (
-        <div class="grid md:grid-cols-4 grid-cols-2 gap-8 place-content-center overflow-hidden">
-          {movies.value.movie.results.map((movie) => (
-            <MovieCard key={movie.id} movie={movie}>
-              <div class="flex items-center gap-1 text-sm" q:slot="subtitle">
-                <Star size={12} /> {movie.vote_average.toFixed(1)}
-              </div>
-              <div
-                class="text-c-text-small min-w-0 max-w-full text-xs text-ellipsis whitespace-nowrap overflow-hidden"
-                q:slot="footer"
-              >
-                {movies.value.genre.genres
-                  .filter((genre) => movie.genre_ids.includes(genre.id))
-                  .map((genre) => genre.name)
-                  .join(" | ")}
-              </div>
-            </MovieCard>
-          ))}
-        </div>
+        <MovieGrid
+          movies={movies.value.movie.results}
+          genres={movies.value.genre.genres}
+        />
       ) : (
         <div class="w-full grid place-items-center">
           There were no results for the given title.
