@@ -1,6 +1,7 @@
-import { component$ } from "@builder.io/qwik";
-import { Form, routeLoader$ } from "@builder.io/qwik-city";
+import { component$, useSignal } from "@builder.io/qwik";
+import { Form, routeLoader$, useLocation } from "@builder.io/qwik-city";
 import { type Movie, type Genre, MovieGrid } from "~/movies";
+import { Spinner } from "~/shared";
 import { fetchData } from "~/utils";
 
 type GenreResponse = {
@@ -44,6 +45,8 @@ export const useMoviesByQuery = routeLoader$(async (event) => {
 
 export default component$(() => {
   const movies = useMoviesByQuery();
+  const loc = useLocation();
+  const query = useSignal(loc.url.searchParams.get("q") ?? "");
 
   return (
     <div class="flex flex-col gap-8">
@@ -53,9 +56,14 @@ export default component$(() => {
           placeholder="Search movie by title..."
           type="search"
           class="rounded-lg p-3 w-full text-c-background"
+          bind:value={query}
         />
       </Form>
-      {!movies.value ? (
+      {loc.isNavigating ? (
+        <div class="grid place-items-center">
+          <Spinner />
+        </div>
+      ) : !movies.value ? (
         <div class="w-full grid place-items-center">
           Search your favorite movies.
         </div>
