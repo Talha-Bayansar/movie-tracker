@@ -1,7 +1,6 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import { Form, routeLoader$, useLocation } from "@builder.io/qwik-city";
 import { type Movie, type Genre, MovieGrid } from "~/movies";
-import { Spinner } from "~/shared";
 import { fetchData } from "~/utils";
 
 type GenreResponse = {
@@ -59,11 +58,7 @@ export default component$(() => {
           bind:value={query}
         />
       </Form>
-      {loc.isNavigating ? (
-        <div class="grid place-items-center">
-          <Spinner />
-        </div>
-      ) : !movies.value ? (
+      {!movies.value ? (
         <div class="w-full grid place-items-center">
           Search your favorite movies.
         </div>
