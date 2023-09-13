@@ -1,9 +1,32 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "qwik-project-name",
-  "short_name": "Welcome to Qwik",
-  "start_url": ".",
+  "theme_color": "#16122F",
+  "background_color": "#16122F",
   "display": "standalone",
-  "background_color": "#fff",
-  "description": "A Qwik project app."
+  "start_url": ".",
+  "name": "StreamTrackr",
+  "short_name": "StreamTrackr",
+  "description": "Discover, Compare, and Enjoy Your Favorite Movies on Netflix, Amazon Prime, Disney Plus, and More with StreamTrackr.",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
