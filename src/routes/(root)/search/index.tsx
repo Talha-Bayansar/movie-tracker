@@ -49,7 +49,7 @@ export default component$(() => {
 
   return (
     <div class="flex flex-col gap-8">
-      <Form>
+      <Form preventdefault:submit>
         <input
           name="q"
           placeholder="Search movie by title..."
