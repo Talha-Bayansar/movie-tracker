@@ -32,7 +32,7 @@ export const useProviders = routeLoader$(async (event) => {
 
 export default component$(() => {
   const movie = useMovie();
-  const providers = useProviders();
+  // const providers = useProviders();
 
   return (
     <div
@@ -74,7 +74,7 @@ export default component$(() => {
 
 export const head: DocumentHead = ({ resolveValue }) => {
   const movie = resolveValue(useMovie);
-  const providers = resolveValue(useProviders);
+  // const providers = resolveValue(useProviders);
   const title = movie.title; // Replace with the actual movie title
   const overview = movie.overview; // Replace with the actual movie description
   const genre = movie.genres.map((v) => v.name).join(", "); // Replace with the actual movie genre
