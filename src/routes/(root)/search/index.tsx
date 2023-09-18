@@ -1,7 +1,12 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { Form, routeLoader$, useLocation } from "@builder.io/qwik-city";
+import {
+  type DocumentHead,
+  Form,
+  routeLoader$,
+  useLocation,
+} from "@builder.io/qwik-city";
 import { type Movie, type Genre, MovieGrid } from "~/movies";
-import { fetchData } from "~/utils";
+import { appTitle, fetchData, searchScreenDescription } from "~/utils";
 
 type GenreResponse = {
   genres: Genre[];
@@ -75,3 +80,13 @@ export default component$(() => {
     </div>
   );
 });
+
+export const head: DocumentHead = {
+  title: appTitle,
+  meta: [
+    {
+      name: "description",
+      content: searchScreenDescription,
+    },
+  ],
+};
