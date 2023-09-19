@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
-import { type Providers, type MovieDetails } from "~/movies";
+import { routeLoader$, type DocumentHead, Link } from "@builder.io/qwik-city";
+import { type Providers, type MovieDetails, type Provider } from "~/movies";
 import { appTitle, fetchData, getMediaUrl } from "~/utils";
 import { Image } from "@unpic/qwik";
 import { Star } from "~/shared";
@@ -32,12 +32,33 @@ export const useProviders = routeLoader$(async (event) => {
 
 export default component$(() => {
   const movie = useMovie();
-  // const providers = useProviders();
+  const providers = useProviders();
+  const provider = providers.value["US"];
+  const duplicateStreamingPlatforms = [
+    ...(provider.buy ?? []),
+    ...(provider.flatrate ?? []),
+    ...(provider.rent ?? []),
+  ];
+  const uniqueStreamingPlatforms = duplicateStreamingPlatforms.filter(
+    (value, index) => {
+      const _value = JSON.stringify(value);
+      return (
+        index ===
+        duplicateStreamingPlatforms.findIndex((obj) => {
+          return JSON.stringify(obj) === _value;
+        })
+      );
+    }
+  );
 
   return (
     <div class="flex flex-col gap-12 flex-grow p-6 relative">
       <Backdrop movie={movie.value} />
       <Main movie={movie.value} />
+      <StreamingPlatforms
+        providers={provider}
+        streamingPlatforms={uniqueStreamingPlatforms}
+      />
       <Overview overview={movie.value.overview} />
     </div>
   );
@@ -84,6 +105,36 @@ const Main = component$(({ movie }: { movie: MovieDetails }) => {
   );
 });
 
+const StreamingPlatforms = component$(
+  ({
+    providers,
+    streamingPlatforms,
+  }: {
+    providers: Providers;
+    streamingPlatforms: Provider[];
+  }) => {
+    return (
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg">Available on</h2>
+        <Link href={providers.link} target="_blank">
+          <div class="flex flex-wrap gap-4">
+            {streamingPlatforms.map((v) => (
+              <Image
+                class="w-8 rounded-lg"
+                key={v.provider_id}
+                src={getMediaUrl("w500", v.logo_path)}
+                width={500}
+                height={500}
+                alt={`Logo of ${v.provider_name}`}
+              />
+            ))}
+          </div>
+        </Link>
+      </div>
+    );
+  }
+);
+
 const Overview = component$(({ overview }: { overview: string }) => {
   return (
     <div class="flex flex-col gap-4">
@@ -95,20 +146,19 @@ const Overview = component$(({ overview }: { overview: string }) => {
 
 export const head: DocumentHead = ({ resolveValue }) => {
   const movie = resolveValue(useMovie);
-  // const providers = resolveValue(useProviders);
+  const providers = resolveValue(useProviders);
   const title = movie.title; // Replace with the actual movie title
   const overview = movie.overview; // Replace with the actual movie description
   const genre = movie.genres.map((v) => v.name).join(", "); // Replace with the actual movie genre
   const rating = movie.vote_average.toFixed(1); // Replace with the actual movie rating
   const releaseYear = movie.release_date; // Replace with the actual movie release year
-  // const streamingPlatforms = [
-  //   ...(providers.buy?.map((v) => v.provider_name) ?? []),
-  //   ...(providers.flatrate?.map((v) => v.provider_name) ?? []),
-  //   ...(providers.rent?.map((v) => v.provider_name) ?? []),
-  // ]; // Replace with the actual streaming platforms array
+  const streamingPlatforms = [
+    ...(providers["US"].buy?.map((v) => v.provider_name) ?? []),
+    ...(providers["US"].flatrate?.map((v) => v.provider_name) ?? []),
+    ...(providers["US"].rent?.map((v) => v.provider_name) ?? []),
+  ]; // Replace with the actual streaming platforms array
 
-  // const platformList = streamingPlatforms.join(", "); // Convert the array to a comma-separated string
-  const platformList = ""; // Convert the array to a comma-separated string
+  const platformList = [...new Set(streamingPlatforms)].join(", "); // Convert the array to a comma-separated string
 
   const movieDescription = `Explore ${title}, a ${genre} film released in ${releaseYear} with a rating of ${rating} available on ${platformList}. ${overview} Discover more about it now!`;
 
