@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead, Link } from "@builder.io/qwik-city";
-import { type Providers, type MovieDetails, type Provider } from "~/movies";
+import type { Providers, MovieDetails, Provider } from "~/movies";
 import { appTitle, fetchData, getMediaUrl } from "~/utils";
 import { Image } from "@unpic/qwik";
 import { Star } from "~/shared";

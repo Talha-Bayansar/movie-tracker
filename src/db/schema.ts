@@ -5,7 +5,7 @@ import {
   primaryKey,
 } from "drizzle-orm/sqlite-core";
 import type { AdapterAccount } from "@auth/core/adapters";
-import { InferModel } from "drizzle-orm";
+import type { InferModel } from "drizzle-orm";
 
 export const favorites = sqliteTable("favorite", {
   id: text("id").notNull().primaryKey(),
