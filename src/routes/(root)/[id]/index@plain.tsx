@@ -33,11 +33,16 @@ export const useProviders = routeLoader$(async (event) => {
 export default component$(() => {
   const movie = useMovie();
   const providers = useProviders();
-  const provider = providers.value["US"];
+  const provider =
+    Object.keys(providers.value).length > 0
+      ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        providers.value["US"] ??
+        providers.value[Object.keys(providers.value)[0]]
+      : undefined;
   const duplicateStreamingPlatforms = [
-    ...(provider.buy ?? []),
-    ...(provider.flatrate ?? []),
-    ...(provider.rent ?? []),
+    ...(provider?.buy ?? []),
+    ...(provider?.flatrate ?? []),
+    ...(provider?.rent ?? []),
   ];
   const uniqueStreamingPlatforms = duplicateStreamingPlatforms.filter(
     (value, index) => {
@@ -110,26 +115,30 @@ const StreamingPlatforms = component$(
     providers,
     streamingPlatforms,
   }: {
-    providers: Providers;
+    providers?: Providers;
     streamingPlatforms: Provider[];
   }) => {
     return (
       <div class="flex flex-col gap-4">
         <h2 class="text-lg">Available on</h2>
-        <Link href={providers.link} target="_blank">
-          <div class="flex flex-wrap gap-4">
-            {streamingPlatforms.map((v) => (
-              <Image
-                class="w-8 rounded-lg"
-                key={v.provider_id}
-                src={getMediaUrl("w500", v.logo_path)}
-                width={500}
-                height={500}
-                alt={`Logo of ${v.provider_name}`}
-              />
-            ))}
-          </div>
-        </Link>
+        {providers ? (
+          <Link href={providers.link} target="_blank">
+            <div class="flex flex-wrap gap-4">
+              {streamingPlatforms.map((v) => (
+                <Image
+                  class="w-8 rounded-lg"
+                  key={v.provider_id}
+                  src={getMediaUrl("w500", v.logo_path)}
+                  width={500}
+                  height={500}
+                  alt={`Logo of ${v.provider_name}`}
+                />
+              ))}
+            </div>
+          </Link>
+        ) : (
+          <p>Not found.</p>
+        )}
       </div>
     );
   }
@@ -152,15 +161,24 @@ export const head: DocumentHead = ({ resolveValue }) => {
   const genre = movie.genres.map((v) => v.name).join(", "); // Replace with the actual movie genre
   const rating = movie.vote_average.toFixed(1); // Replace with the actual movie rating
   const releaseYear = movie.release_date; // Replace with the actual movie release year
+  const provider =
+    Object.keys(providers).length > 0
+      ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        providers["US"] ?? providers[Object.keys(providers)[0]]
+      : undefined;
   const streamingPlatforms = [
-    ...(providers["US"].buy?.map((v) => v.provider_name) ?? []),
-    ...(providers["US"].flatrate?.map((v) => v.provider_name) ?? []),
-    ...(providers["US"].rent?.map((v) => v.provider_name) ?? []),
+    ...(provider?.buy?.map((v) => v.provider_name) ?? []),
+    ...(provider?.flatrate?.map((v) => v.provider_name) ?? []),
+    ...(provider?.rent?.map((v) => v.provider_name) ?? []),
   ]; // Replace with the actual streaming platforms array
 
   const platformList = [...new Set(streamingPlatforms)].join(", "); // Convert the array to a comma-separated string
 
-  const movieDescription = `Explore ${title}, a ${genre} film released in ${releaseYear} with a rating of ${rating} available on ${platformList}. ${overview} Discover more about it now!`;
+  const movieDescription = `Explore ${title}, a ${genre} film released in ${releaseYear} with a rating of ${rating} ${
+    streamingPlatforms.length > 0
+      ? `available on ${platformList}`
+      : "unavailable at the moment"
+  }. ${overview} Discover more about it now!`;
 
   return {
     title: `${appTitle} | ${title}`,
