@@ -35,39 +35,60 @@ export default component$(() => {
   // const providers = useProviders();
 
   return (
-    <div
-      class="flex flex-col gap-4 flex-grow p-6 bg-contain bg-no-repeat"
-      style={`background-image:linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(${getMediaUrl(
-        "w500",
-        movie.value.backdrop_path
-      )})`}
-    >
-      <div class="flex gap-8 mt-36">
-        <div class="flex-grow-[2]">
-          <Image
-            class="w-full rounded"
-            width={160}
-            height={240}
-            src={getMediaUrl("w300", movie.value.poster_path)}
-            alt={`Poster of the movie: ${movie.value.title}`}
-          />
-        </div>
-        <div class="flex flex-col flex-grow-[3] gap-4">
-          <h1 class="text-xl">{movie.value.title}</h1>
-          <div class="flex flex-wrap text-sm gap-2 text-c-grey">
-            <span class="flex items-center">
-              <Star size={12} /> {movie.value.vote_average.toFixed(1)}
-            </span>
-            | <span>{movie.value.vote_count} reviews</span>|
-            <span class="flex">{movie.value.runtime} min</span>|{" "}
-            <span>{movie.value.genres.map((v) => v.name).join(", ")}</span>
-          </div>
+    <div class="flex flex-col gap-12 flex-grow p-6 relative">
+      <Backdrop movie={movie.value} />
+      <Main movie={movie.value} />
+      <Overview overview={movie.value.overview} />
+    </div>
+  );
+});
+
+const Backdrop = component$(({ movie }: { movie: MovieDetails }) => {
+  return (
+    <div class="absolute top-0 left-0 right-0 z-0">
+      <div class="absolute z-10 inset-0 bg-gradient-to-b from-transparent to-c-background" />
+      <Image
+        src={getMediaUrl("w500", movie.backdrop_path)}
+        width={500}
+        height={281}
+        alt={`Backdrop of the movie: ${movie.title}`}
+      />
+    </div>
+  );
+});
+
+const Main = component$(({ movie }: { movie: MovieDetails }) => {
+  return (
+    <div class="flex gap-8 mt-36 z-10">
+      <div class="flex-grow-[2]">
+        <Image
+          class="w-full rounded"
+          width={160}
+          height={240}
+          src={getMediaUrl("w300", movie.poster_path)}
+          alt={`Poster of the movie: ${movie.title}`}
+        />
+      </div>
+      <div class="flex flex-col flex-grow-[3] gap-4">
+        <h1 class="text-xl">{movie.title}</h1>
+        <div class="flex flex-wrap text-sm gap-2 text-c-grey">
+          <span class="flex items-center gap-1">
+            <Star size={12} /> {movie.vote_average.toFixed(1)}
+          </span>
+          | <span>{movie.vote_count} reviews</span>|
+          <span class="flex">{movie.runtime} min</span>|{" "}
+          <span>{movie.genres.map((v) => v.name).join(", ")}</span>
         </div>
       </div>
-      <div class="flex flex-col gap-4">
-        <h2 class="text-xl">Overview</h2>
-        <p class="text-sm text-c-grey">{movie.value.overview}</p>
-      </div>
+    </div>
+  );
+});
+
+const Overview = component$(({ overview }: { overview: string }) => {
+  return (
+    <div class="flex flex-col gap-4">
+      <h2 class="text-xl">Overview</h2>
+      <p class="text-sm text-c-grey">{overview}</p>
     </div>
   );
 });
