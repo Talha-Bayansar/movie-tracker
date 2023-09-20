@@ -22,7 +22,7 @@ export const NavButton = component$(
         class={twMerge(
           "rounded-full p-3 transition-transform",
           `${isActive && "bg-c-background-light"}`,
-          `${isTouching.value ? "scale-75" : "scale-100"}`,
+          `${isTouching.value ? "scale-90" : "scale-100"}`,
           className
         )}
         {...props}
