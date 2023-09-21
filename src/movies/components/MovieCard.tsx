@@ -9,15 +9,17 @@ type Props = {
   movie: Movie;
   href: string;
   class?: string;
+  id?: string;
 };
 
 export const MovieCard = component$(
-  ({ movie, class: className, href }: Props) => {
+  ({ movie, class: className, href, id }: Props) => {
     const isTouching = useSignal(false);
 
     return (
       <Link
         href={href}
+        id={id}
         onTouchStart$={() => (isTouching.value = true)}
         onTouchEnd$={() => (isTouching.value = false)}
         onTouchCancel$={() => (isTouching.value = false)}
