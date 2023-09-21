@@ -1,4 +1,4 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import {
   type DocumentHead,
   Form,
@@ -68,6 +68,11 @@ export default component$(() => {
     moviesByQuery.value.movies
   );
 
+  useVisibleTask$(async (taskCtx) => {
+    taskCtx.track(() => moviesByQuery.value.movies);
+    movies.value = moviesByQuery.value.movies;
+  });
+
   const handleEnd = $(
     async (
       currentValue: MovieResponse | undefined | null,
@@ -93,7 +98,7 @@ export default component$(() => {
 
   return (
     <div class="flex flex-col gap-8">
-      <Form preventdefault:submit>
+      <Form>
         <input
           name="q"
           placeholder="Search movie by title..."
