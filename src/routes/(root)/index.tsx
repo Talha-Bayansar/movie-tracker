@@ -22,6 +22,111 @@ type ApiResponse = {
   total_results: number;
 };
 
+export default component$(() => {
+  const { value: nowPlayingMovies } = useNowPlayingMovies();
+  const { value: popularMovies } = usePopularMovies();
+  const { value: topRatedMovies } = useTopRatedMovies();
+  const { value: upcomingMovies } = useUpcomingMovies();
+  const { value: token } = useToken();
+  const genres = useGenres();
+
+  const data = useStore({
+    nowPlayingMovies,
+    popularMovies,
+    topRatedMovies,
+    upcomingMovies,
+  });
+
+  const handleEnd = $(
+    async (
+      currentValue: ApiResponse,
+      loadFn: (token?: string, page?: number) => Promise<ApiResponse>
+    ) => {
+      const response = await loadFn(token, currentValue.page + 1);
+      return {
+        ...response,
+        results: [...currentValue.results, ...response.results],
+      } as ApiResponse;
+    }
+  );
+
+  return (
+    <div class="flex flex-col gap-8">
+      <MovieSection
+        title="Now playing"
+        movies={data.nowPlayingMovies.results}
+        genres={genres.value.genres}
+        onEnd$={async () => {
+          if (
+            data.nowPlayingMovies.page !== data.nowPlayingMovies.total_pages
+          ) {
+            const response = await handleEnd(
+              data.nowPlayingMovies,
+              fetchNowPlayingMovies
+            );
+            data.nowPlayingMovies = response;
+          }
+        }}
+      />
+      <MovieSection
+        title="Popular"
+        movies={data.popularMovies.results}
+        genres={genres.value.genres}
+        onEnd$={async () => {
+          if (data.popularMovies.page !== data.popularMovies.total_pages) {
+            const response = await handleEnd(
+              data.popularMovies,
+              fetchPopularMovies
+            );
+            data.popularMovies = response;
+          }
+        }}
+      />
+      <MovieSection
+        title="Top rated"
+        movies={data.topRatedMovies.results}
+        genres={genres.value.genres}
+        onEnd$={async () => {
+          if (data.topRatedMovies.page !== data.topRatedMovies.total_pages) {
+            const response = await handleEnd(
+              data.topRatedMovies,
+              fetchTopRatedMovies
+            );
+
+            data.topRatedMovies = response;
+          }
+        }}
+      />
+      <MovieSection
+        title="Upcoming"
+        movies={data.upcomingMovies.results}
+        genres={genres.value.genres}
+        onEnd$={async () => {
+          if (
+            data.nowPlayingMovies.page !== data.nowPlayingMovies.total_pages
+          ) {
+            const response = await handleEnd(
+              data.upcomingMovies,
+              fetchUpcomingMovies
+            );
+            data.upcomingMovies = response;
+          }
+        }}
+      />
+    </div>
+  );
+});
+
+export const head: DocumentHead = {
+  title: appTitle,
+  meta: [
+    {
+      name: "description",
+      content: appDescription,
+    },
+  ],
+};
+
 const fetchNowPlayingMovies = async (token?: string, page?: number) => {
   const today = startOfToday();
   const response = await fetchData(
@@ -112,105 +217,3 @@ export const useGenres = routeLoader$(async (event) => {
 export const useToken = routeLoader$((event) => {
   return event.env.get("MOVIE_READ_TOKEN");
 });
-
-export default component$(() => {
-  const { value: nowPlayingMovies } = useNowPlayingMovies();
-  const { value: popularMovies } = usePopularMovies();
-  const { value: topRatedMovies } = useTopRatedMovies();
-  const { value: upcomingMovies } = useUpcomingMovies();
-  const { value: token } = useToken();
-  const genres = useGenres();
-
-  const data = useStore({
-    nowPlayingMovies,
-    popularMovies,
-    topRatedMovies,
-    upcomingMovies,
-  });
-
-  const handleEnd = $(
-    async (
-      currentValue: ApiResponse,
-      loadFn: (token?: string, page?: number) => Promise<ApiResponse>
-    ) => {
-      if (currentValue.total_pages !== currentValue.page) {
-        const response = await loadFn(token, currentValue.page + 1);
-        return {
-          ...response,
-          results: [...currentValue.results, ...response.results],
-        } as ApiResponse;
-      }
-    }
-  );
-
-  return (
-    <div class="flex flex-col gap-8">
-      <MovieSection
-        title="Now playing"
-        movies={data.nowPlayingMovies.results}
-        genres={genres.value.genres}
-        onEnd$={async () => {
-          const response = await handleEnd(
-            data.nowPlayingMovies,
-            fetchNowPlayingMovies
-          );
-          if (response) {
-            data.nowPlayingMovies = response;
-          }
-        }}
-      />
-      <MovieSection
-        title="Popular"
-        movies={data.popularMovies.results}
-        genres={genres.value.genres}
-        onEnd$={async () => {
-          const response = await handleEnd(
-            data.popularMovies,
-            fetchPopularMovies
-          );
-          if (response) {
-            data.popularMovies = response;
-          }
-        }}
-      />
-      <MovieSection
-        title="Top rated"
-        movies={data.topRatedMovies.results}
-        genres={genres.value.genres}
-        onEnd$={async () => {
-          const response = await handleEnd(
-            data.topRatedMovies,
-            fetchTopRatedMovies
-          );
-          if (response) {
-            data.topRatedMovies = response;
-          }
-        }}
-      />
-      <MovieSection
-        title="Upcoming"
-        movies={data.upcomingMovies.results}
-        genres={genres.value.genres}
-        onEnd$={async () => {
-          const response = await handleEnd(
-            data.upcomingMovies,
-            fetchUpcomingMovies
-          );
-          if (response) {
-            data.upcomingMovies = response;
-          }
-        }}
-      />
-    </div>
-  );
-});
-
-export const head: DocumentHead = {
-  title: appTitle,
-  meta: [
-    {
-      name: "description",
-      content: appDescription,
-    },
-  ],
-};

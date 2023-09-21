@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import {
   type DocumentHead,
   Form,
@@ -19,38 +19,77 @@ type MovieResponse = {
   total_results: number;
 };
 
-type ApiResponse = {
-  movie: MovieResponse;
-  genre: GenreResponse;
+type MoviesByQueryResponse = {
+  movies?: MovieResponse;
+  query: string;
 };
 
-export const useMoviesByQuery = routeLoader$(async (event) => {
-  const query = event.query.get("q");
+const fetchMoviesByQuery = async (
+  token?: string,
+  query?: string,
+  page?: number
+) => {
   if (query) {
-    const movie = await fetchData(
-      event.env.get("MOVIE_READ_TOKEN") as string,
-      `/search/movie`,
-      {
-        query: query,
-      }
-    );
-    const genre = await fetchData(
-      event.env.get("MOVIE_READ_TOKEN") as string,
-      `/genre/movie/list`
-    );
-    return {
-      genre,
-      movie,
-    } as ApiResponse;
+    const movies = await fetchData(token ?? "", `/search/movie`, {
+      query: query,
+      page: page ?? 1,
+    });
+
+    return movies as MovieResponse;
   } else {
     return null;
   }
+};
+
+export const useGenres = routeLoader$(async (event) => {
+  const genres = await fetchData(
+    event.env.get("MOVIE_READ_TOKEN") as string,
+    `/genre/movie/list`
+  );
+  return genres as GenreResponse;
+});
+
+export const useMoviesByQuery = routeLoader$(async (event) => {
+  const query = event.query.get("q");
+  const response = await fetchMoviesByQuery(
+    event.env.get("MOVIE_READ_TOKEN") as string,
+    query ?? undefined
+  );
+  return { movies: response, query } as MoviesByQueryResponse;
 });
 
 export default component$(() => {
-  const movies = useMoviesByQuery();
+  const moviesByQuery = useMoviesByQuery();
+  const genres = useGenres();
+  const { value: token } = useToken();
   const loc = useLocation();
   const query = useSignal(loc.url.searchParams.get("q") ?? "");
+  const movies = useSignal<MovieResponse | null | undefined>(
+    moviesByQuery.value.movies
+  );
+
+  const handleEnd = $(
+    async (
+      currentValue: MovieResponse | undefined | null,
+      loadFn: (
+        token?: string,
+        query?: string,
+        page?: number
+      ) => Promise<MovieResponse | null | undefined>
+    ) => {
+      const response = await loadFn(
+        token,
+        moviesByQuery.value.query,
+        currentValue?.page ? currentValue.page + 1 : undefined
+      );
+      if (response && currentValue?.results) {
+        return {
+          ...response,
+          results: [...currentValue.results, ...response.results],
+        };
+      } else return null;
+    }
+  );
 
   return (
     <div class="flex flex-col gap-8">
@@ -67,10 +106,19 @@ export default component$(() => {
         <div class="w-full grid place-items-center">
           Search your favorite movies.
         </div>
-      ) : movies.value.movie.total_results > 0 ? (
+      ) : movies.value.total_results > 0 ? (
         <MovieGrid
-          movies={movies.value.movie.results}
-          genres={movies.value.genre.genres}
+          movies={movies.value.results}
+          genres={genres.value.genres}
+          onEnd$={async () => {
+            if (movies.value?.page !== movies.value?.total_pages) {
+              const response = await handleEnd(
+                movies.value,
+                fetchMoviesByQuery
+              );
+              movies.value = response;
+            }
+          }}
         />
       ) : (
         <div class="w-full grid place-items-center">
@@ -90,3 +138,7 @@ export const head: DocumentHead = {
     },
   ],
 };
+
+export const useToken = routeLoader$((event) => {
+  return event.env.get("MOVIE_READ_TOKEN");
+});
